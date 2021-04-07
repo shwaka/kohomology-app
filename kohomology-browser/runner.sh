@@ -1,3 +1,3 @@
 #! /bin/bash
 
-./gradlew run
+./gradlew run --continuous
