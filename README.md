@@ -1,4 +1,4 @@
-Here are two applications
+Here are two applications which can be used as templates to use [shwaka/kohomology](https://github.com/shwaka/kohomology).
 
 - `kohomology-cli`: Run the application in the command line. (recommended)
 - `kohomology-browser`: Run the application in the browser.
@@ -14,3 +14,6 @@ You can run each application by the following way:
 - Mac, Linux: Run `runner.sh` from terminal (or possibly click it?)
 
 You can define your own chain complex and compute its cohomology by editing the script `src/main/kotlin/main.kt`.
+
+## More examples
+There are a lot of examples in tests in [shwaka/kohomology](https://github.com/shwaka/kohomology).
