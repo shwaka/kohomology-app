@@ -3,6 +3,10 @@ Here are two applications
 - `kohomology-cli`: Run the application in the command line. (recommended)
 - `kohomology-browser`: Run the application in the browser.
 
+## Requirement
+You need to install Java (JVM) from [Java | Oracle](https://www.java.com/en/) ([日本語ページ](https://www.java.com/ja/)).
+The version of Java is not relevant, I believe, since the application uses `gradle`.
+
 ## Usage
 You can run each application by the following way:
 
