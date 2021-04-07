@@ -10,8 +10,9 @@ The version of Java is not relevant, I believe, since the application uses `grad
 ## Usage
 You can run each application by the following way:
 
+- Linux, Mac: Run `runner.sh` from terminal (or possibly click it?)
 - Windows: Click `runner.bat` from Explorer
-- Mac, Linux: Run `runner.sh` from terminal (or possibly click it?)
+- Also you can use `gradle` directly by executing `./gradlew run` (or `gradlew.bat run`) in the command line, of course.
 
 You can define your own chain complex and compute its cohomology by editing the script `src/main/kotlin/main.kt`.
 
