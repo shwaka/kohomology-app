@@ -6,7 +6,7 @@ import com.github.shwaka.kohomology.specific.DenseNumVectorSpaceOverBigRational
 
 fun main() {
     Printer.execute {
-        val foo = BigRationalField.withContext {
+        val foo = BigRationalField.context.run {
             one / two + one / three
         }
         Printer.printToBrowserImmediately(foo)
@@ -17,8 +17,8 @@ fun main() {
 
 suspend fun numVectorTest() {
     val vectorSpace = DenseNumVectorSpaceOverBigRational
-    val result = vectorSpace.withContext {
-        val v = vectorSpace.fromValues(one, zero)
+    val result = vectorSpace.context.run {
+        val v = vectorSpace.fromValues(listOf(one, zero))
         "2 * (1, 0) = ${two * v}"
     }
     Printer.printToBrowserImmediately(result)
@@ -37,7 +37,7 @@ suspend fun cohomologyTest() {
         listOf(zeroGVector, zeroGVector, a.pow(2), a * b, b.pow(2))
     }
     val (a, b, x, y, z) = freeDGAlgebra.gAlgebra.generatorList
-    freeDGAlgebra.withDGAlgebraContext {
+    freeDGAlgebra.context.run {
         Printer.printToBrowser(d(x * y))
         Printer.printToBrowser(d(x * y * z))
     }

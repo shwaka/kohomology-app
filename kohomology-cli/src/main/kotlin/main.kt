@@ -1,6 +1,6 @@
 import com.github.shwaka.kohomology.free.FreeDGAlgebra
 import com.github.shwaka.kohomology.free.Indeterminate
-import com.github.shwaka.kohomology.model.freeLoopSpace
+import com.github.shwaka.kohomology.model.FreeLoopSpace
 import com.github.shwaka.kohomology.specific.DenseMatrixSpaceOverBigRational
 
 fun main() {
@@ -13,7 +13,7 @@ fun main() {
     val sphere = FreeDGAlgebra(matrixSpace, indeterminateList) { (x, y) ->
         listOf(zeroGVector, x.pow(2))
     }
-    val freeLoopSpace = freeLoopSpace(sphere)
+    val freeLoopSpace = FreeLoopSpace(sphere)
     val (x, y, sx, sy) = freeLoopSpace.gAlgebra.generatorList
 
     for (degree in 0 until 20) {
@@ -21,7 +21,7 @@ fun main() {
         println("H^$degree = Q$basis")
     }
 
-    freeLoopSpace.withDGAlgebraContext {
+    freeLoopSpace.context.run {
         println(d(sy))
         val n = 3
         val alpha = x.pow(2) * sx * sy.pow(n) // = d(y * sx * sy.pow(n))
