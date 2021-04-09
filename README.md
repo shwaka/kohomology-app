@@ -15,6 +15,7 @@ You can run each application by the following way:
 - Also you can use `gradle` directly by executing `./gradlew run` (or `gradlew.bat run`) in the command line, of course.
 
 You can define your own chain complex and compute its cohomology by editing the script `src/main/kotlin/main.kt`.
+I *strongly recommend* to use [IntelliJ IDEA](https://www.jetbrains.com/idea/), which is very helpful to write the script correctly.
 
 ## More examples
 There are a lot of examples in tests in [shwaka/kohomology](https://github.com/shwaka/kohomology).
