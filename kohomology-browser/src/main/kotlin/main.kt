@@ -1,8 +1,8 @@
 import com.github.shwaka.kohomology.free.FreeDGAlgebra
 import com.github.shwaka.kohomology.free.Indeterminate
 import com.github.shwaka.kohomology.specific.BigRationalField
-import com.github.shwaka.kohomology.specific.DenseMatrixSpaceOverBigRational
-import com.github.shwaka.kohomology.specific.DenseNumVectorSpaceOverBigRational
+import com.github.shwaka.kohomology.specific.SparseMatrixSpaceOverBigRational
+import com.github.shwaka.kohomology.specific.SparseNumVectorSpaceOverBigRational
 
 fun main() {
     Printer.execute {
@@ -16,7 +16,7 @@ fun main() {
 }
 
 suspend fun numVectorTest() {
-    val vectorSpace = DenseNumVectorSpaceOverBigRational
+    val vectorSpace = SparseNumVectorSpaceOverBigRational
     val result = vectorSpace.context.run {
         val v = vectorSpace.fromValues(listOf(one, zero))
         "2 * (1, 0) = ${two * v}"
@@ -25,7 +25,7 @@ suspend fun numVectorTest() {
 }
 
 suspend fun cohomologyTest() {
-    val matrixSpace = DenseMatrixSpaceOverBigRational
+    val matrixSpace = SparseMatrixSpaceOverBigRational
     val indeterminateList = listOf(
         Indeterminate("a", 2),
         Indeterminate("b", 2),
