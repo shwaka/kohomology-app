@@ -36,5 +36,5 @@ jobs:
         run: chmod +x gradlew
       - name: Compile with Gradle
         run: ./gradlew compileKotlin
-      - name: Run
-        run: ./gradlew run
+      # - name: Run
+      #   run: ./gradlew run # This does not finish for kohomology-browser
