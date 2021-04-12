@@ -9,7 +9,6 @@ import com.github.shwaka.kohomology.linalg.SparseMatrix
 import com.github.shwaka.kohomology.linalg.SparseNumVector
 import com.github.shwaka.kohomology.specific.BigRational
 import com.github.shwaka.kohomology.specific.SparseMatrixSpaceOverBigRational
-import kotlinx.html.I
 import kotlinx.html.InputType
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
@@ -59,21 +58,16 @@ class Computer(props: ComputerProps) : RComponent<ComputerProps, ComputerState>(
                     type = InputType.button
                     value = "Submit"
                     onClickFunction = { _ ->
-                        // val getDifferentialValueList = eval("""
-                        //     function getDifferentialValueList(generatorList) {
-                        //       const x = generatorList[0];
-                        //       const y = generatorList[1];
-                        //       return [ this.zeroGVector, x * x ];
-                        //     };
-                        //     getDifferentialValueList
-                        // """.trimIndent()) as GetDifferentialValueList
-                        val square = eval("function square(x) { return myMultiply(x, x) }; square")
-                        val getDifferentialValueList: GetDifferentialValueList = { (x, _) ->
-                            console.log(square(x))
-                            listOf(zeroGVector, square(x))
-                        }
+                        val getDifferentialValueArray = eval("""
+                            function getDifferentialValueArray(gAlgebraContext, generatorList, zeroGVector) {
+                              const x = generatorList[0];
+                              // const y = generatorList[1];
+                              return [ zeroGVector, myMultiply(x, x) ];
+                            };
+                            getDifferentialValueArray
+                        """.trimIndent()) as GetDifferentialValueArray
                         val indeterminateList: List<SerializableIndeterminate> = Json.decodeFromString(state.json)
-                        computeCohomology(indeterminateList, getDifferentialValueList)
+                        computeCohomology(indeterminateList, getDifferentialValueArray)
                         val display = indeterminateList.toString()
                         setState(
                             ComputerState(json = state.json, display = display)
@@ -101,14 +95,25 @@ fun myMultiply(
 @Serializable
 data class SerializableIndeterminate(val name: String, val degree: Int)
 
-typealias GetDifferentialValueList = GAlgebraContext<Monomial<String>, BigRational, SparseNumVector<BigRational>, SparseMatrix<BigRational>>.(List<GVector<Monomial<String>, BigRational, SparseNumVector<BigRational>>>) -> List<GVectorOrZero<Monomial<String>, BigRational, SparseNumVector<BigRational>>>
+typealias CurrentContext = GAlgebraContext<Monomial<String>, BigRational, SparseNumVector<BigRational>, SparseMatrix<BigRational>>
+typealias CurrentGVector = GVector<Monomial<String>, BigRational, SparseNumVector<BigRational>>
+typealias CurrentGVectorOrZero = GVectorOrZero<Monomial<String>, BigRational, SparseNumVector<BigRational>>
+typealias GetDifferentialValueArray = CurrentContext.(Array<CurrentGVector>, CurrentGVectorOrZero) -> Array<CurrentGVectorOrZero>
+typealias GetDifferentialValueList = CurrentContext.(List<CurrentGVector>) -> List<CurrentGVectorOrZero>
 
 fun computeCohomology(
     serializableIndeterminateList: List<SerializableIndeterminate>,
-    getDifferentialValueList: GetDifferentialValueList
+    getDifferentialValueArray: GetDifferentialValueArray
 ) {
     val indeterminateList: List<Indeterminate<String>> = serializableIndeterminateList.map {
         Indeterminate(it.name, it.degree)
+    }
+
+    val getDifferentialValueList: GetDifferentialValueList = { valueList ->
+        getDifferentialValueArray(
+            valueList.toTypedArray(),
+            zeroGVector
+        ).toList()
     }
     val freeDGAlgebra = FreeDGAlgebra(SparseMatrixSpaceOverBigRational, indeterminateList, getDifferentialValueList)
     for (degree in 0 until 20) {
