@@ -5,9 +5,14 @@ import kotlinx.browser.window
 fun main() {
     window.onload = {
         render(document.getElementById("root")) {
-            child(Welcome::class) {
+            child(Computer::class) {
                 attrs {
-                    name = "Kotlin/JS"
+                    json = """
+                        [
+                          { "name": "x", "degree": 2 },
+                          { "name": "y", "degree": 3 }
+                        ]
+                    """.trimIndent()
                 }
             }
         }

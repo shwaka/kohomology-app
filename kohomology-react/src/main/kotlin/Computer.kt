@@ -1,6 +1,9 @@
 import kotlinx.html.InputType
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import org.w3c.dom.HTMLInputElement
 import react.RBuilder
 import react.RComponent
@@ -10,20 +13,20 @@ import react.dom.div
 import react.dom.form
 import react.dom.input
 
-external interface WelcomeProps : RProps {
-    var name: String
+external interface ComputerProps : RProps {
+    var json: String
 }
 
-data class WelcomeState(
-    val name: String,
+data class ComputerState(
+    val json: String,
     val display: String = "",
 ) : RState
 
 @JsExport
-class Welcome(props: WelcomeProps) : RComponent<WelcomeProps, WelcomeState>(props) {
+class Computer(props: ComputerProps) : RComponent<ComputerProps, ComputerState>(props) {
 
     init {
-        state = WelcomeState(props.name)
+        state = ComputerState(props.json)
     }
 
     override fun RBuilder.render() {
@@ -31,10 +34,10 @@ class Welcome(props: WelcomeProps) : RComponent<WelcomeProps, WelcomeState>(prop
             input {
                 attrs {
                     type = InputType.text
-                    value = state.name
+                    value = state.json
                     onChangeFunction = { event ->
                         setState(
-                            WelcomeState(name = (event.target as HTMLInputElement).value)
+                            ComputerState(json = (event.target as HTMLInputElement).value, display = state.display)
                         )
                     }
                 }
@@ -44,9 +47,10 @@ class Welcome(props: WelcomeProps) : RComponent<WelcomeProps, WelcomeState>(prop
                     type = InputType.button
                     value = "Submit"
                     onClickFunction = { _ ->
-                        val display = "Submitted name is ${state.name}"
+                        val indeterminateList: List<SerializableIndeterminate> = Json.decodeFromString(state.json)
+                        val display = indeterminateList.toString()
                         setState(
-                            WelcomeState(name = state.name, display = display)
+                            ComputerState(json = state.json, display = display)
                         )
                     }
                 }
@@ -57,3 +61,6 @@ class Welcome(props: WelcomeProps) : RComponent<WelcomeProps, WelcomeState>(prop
         }
     }
 }
+
+@Serializable
+data class SerializableIndeterminate(val name: String, val degree: Int)

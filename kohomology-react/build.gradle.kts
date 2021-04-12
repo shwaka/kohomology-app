@@ -1,5 +1,7 @@
 plugins {
-    kotlin("js") version "1.4.32"
+    val kotlinVersion = "1.4.32"
+    kotlin("js") version kotlinVersion
+    kotlin("plugin.serialization") version kotlinVersion
 }
 
 group = "me.shun"
@@ -15,6 +17,7 @@ dependencies {
     testImplementation(kotlin("test-js"))
     implementation("org.jetbrains:kotlin-react:16.13.1-pre.113-kotlin-1.4.0")
     implementation("org.jetbrains:kotlin-react-dom:16.13.1-pre.113-kotlin-1.4.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.1.0")
 }
 
 kotlin {
