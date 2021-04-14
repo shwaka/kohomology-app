@@ -16,7 +16,7 @@ repositories {
 dependencies {
     testImplementation(kotlin("test-junit"))
     implementation("org.slf4j:slf4j-nop:1.7.30")
-    implementation("com.github.shwaka.kohomology:kohomology:0.2")
+    implementation("com.github.shwaka.kohomology:kohomology:0.3")
 }
 
 tasks.test {
