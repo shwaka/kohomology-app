@@ -18,7 +18,7 @@ fun main() {
 suspend fun numVectorTest() {
     val vectorSpace = SparseNumVectorSpaceOverBigRational
     val result = vectorSpace.context.run {
-        val v = vectorSpace.fromValues(listOf(one, zero))
+        val v = vectorSpace.fromValueList(listOf(one, zero))
         "2 * (1, 0) = ${two * v}"
     }
     Printer.printToBrowserImmediately(result)
