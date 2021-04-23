@@ -7,7 +7,7 @@ fun main() {
         render(document.getElementById("root")) {
             child(Computer::class) {
                 attrs {
-                    json = """[["x", 2], ["y", 3]]"""
+                    json = """[["x", 2, "zero"], ["y", 3, "x^2"]]"""
                 }
             }
         }

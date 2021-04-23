@@ -3,6 +3,8 @@ import com.github.shwaka.kohomology.dg.GAlgebraContext
 import com.github.shwaka.kohomology.dg.GVector
 import com.github.shwaka.kohomology.dg.GVectorOrZero
 import com.github.shwaka.kohomology.free.FreeDGAlgebra
+import com.github.shwaka.kohomology.free.FreeGAlgebraContext
+import com.github.shwaka.kohomology.free.GeneratorOfFreeDGA
 import com.github.shwaka.kohomology.free.Indeterminate
 import com.github.shwaka.kohomology.free.Monomial
 import com.github.shwaka.kohomology.free.StringIndeterminateName
@@ -16,7 +18,6 @@ import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
@@ -41,7 +42,7 @@ data class ComputerState(
 ) : RState
 
 @Serializable
-data class SerializableGenerator(val name: String, val degree: Degree)
+data class SerializableGenerator(val name: String, val degree: Degree, val differentialValue: String)
 
 object GeneratorSerializer : JsonTransformingSerializer<SerializableGenerator>(SerializableGenerator.serializer()) {
     override fun transformDeserialize(element: JsonElement): JsonElement {
@@ -50,6 +51,7 @@ object GeneratorSerializer : JsonTransformingSerializer<SerializableGenerator>(S
                 mapOf(
                     "name" to element[0],
                     "degree" to element[1],
+                    "differentialValue" to element[2],
                 )
             )
         } else {
@@ -83,17 +85,9 @@ class Computer(props: ComputerProps) : RComponent<ComputerProps, ComputerState>(
                     type = InputType.button
                     value = "Submit"
                     onClickFunction = { _ ->
-                        val getDifferentialValueArray = eval("""
-                            function getDifferentialValueArray(gAlgebraContext, generatorList, zeroGVector) {
-                              const x = generatorList[0];
-                              // const y = generatorList[1];
-                              return [ zeroGVector, myMultiply(x, x) ];
-                            };
-                            getDifferentialValueArray
-                        """.trimIndent()) as GetDifferentialValueArray
-                        val indeterminateList: List<SerializableGenerator> = Json.decodeFromString(ListSerializer(GeneratorSerializer), state.json)
-                        computeCohomology(indeterminateList, getDifferentialValueArray)
-                        val display = indeterminateList.toString()
+                        val generatorList: List<SerializableGenerator> = Json.decodeFromString(ListSerializer(GeneratorSerializer), state.json)
+                        computeCohomology(generatorList)
+                        val display = generatorList.toString()
                         setState(
                             ComputerState(json = state.json, display = display)
                         )
@@ -117,27 +111,19 @@ fun myMultiply(
     }
 }
 
-typealias CurrentContext = GAlgebraContext<Monomial<StringIndeterminateName>, BigRational, SparseNumVector<BigRational>, SparseMatrix<BigRational>>
+typealias CurrentContext = FreeGAlgebraContext<StringIndeterminateName, BigRational, SparseNumVector<BigRational>, SparseMatrix<BigRational>>
 typealias CurrentGVector = GVector<Monomial<StringIndeterminateName>, BigRational, SparseNumVector<BigRational>>
 typealias CurrentGVectorOrZero = GVectorOrZero<Monomial<StringIndeterminateName>, BigRational, SparseNumVector<BigRational>>
 typealias GetDifferentialValueArray = CurrentContext.(Array<CurrentGVector>, CurrentGVectorOrZero) -> Array<CurrentGVectorOrZero>
 typealias GetDifferentialValueList = CurrentContext.(List<CurrentGVector>) -> List<CurrentGVectorOrZero>
 
 fun computeCohomology(
-    serializableIndeterminateList: List<SerializableGenerator>,
-    getDifferentialValueArray: GetDifferentialValueArray
+    serializableGeneratorList: List<SerializableGenerator>,
 ) {
-    val indeterminateList: List<Indeterminate<StringIndeterminateName>> = serializableIndeterminateList.map {
-        Indeterminate(it.name, it.degree)
+    val generatorList = serializableGeneratorList.map {
+        GeneratorOfFreeDGA(it.name, it.degree, it.differentialValue)
     }
-
-    val getDifferentialValueList: GetDifferentialValueList = { valueList ->
-        getDifferentialValueArray(
-            valueList.toTypedArray(),
-            zeroGVector
-        ).toList()
-    }
-    val freeDGAlgebra = FreeDGAlgebra(SparseMatrixSpaceOverBigRational, indeterminateList, getDifferentialValueList)
+    val freeDGAlgebra = FreeDGAlgebra(SparseMatrixSpaceOverBigRational, generatorList)
     for (degree in 0 until 20) {
         val basis = freeDGAlgebra.cohomology.getBasis(degree)
         println("H^$degree = Q$basis")
