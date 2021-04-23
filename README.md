@@ -2,6 +2,7 @@ Here are two applications which can be used as templates to use [shwaka/kohomolo
 
 - `kohomology-cli`: Run the application in the command line. (recommended)
 - `kohomology-browser`: Run the application in the browser.
+- `kohomology-react`: Input a Sullivan algebra from the browser. (See [github pages](https://shwaka.github.io/kohomology-app/))
 
 ## Requirement
 You need to install Java (JVM) from [Java | Oracle](https://www.java.com/en/) ([日本語ページ](https://www.java.com/ja/)).
