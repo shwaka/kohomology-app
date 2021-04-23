@@ -7,12 +7,7 @@ fun main() {
         render(document.getElementById("root")) {
             child(Computer::class) {
                 attrs {
-                    json = """
-                        [
-                          { "name": "x", "degree": 2 },
-                          { "name": "y", "degree": 3 }
-                        ]
-                    """.trimIndent()
+                    json = """[["x", 2], ["y", 3]]"""
                 }
             }
         }

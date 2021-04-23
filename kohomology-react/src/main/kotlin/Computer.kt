@@ -10,12 +10,18 @@ import com.github.shwaka.kohomology.linalg.SparseMatrix
 import com.github.shwaka.kohomology.linalg.SparseNumVector
 import com.github.shwaka.kohomology.specific.BigRational
 import com.github.shwaka.kohomology.specific.SparseMatrixSpaceOverBigRational
+import com.github.shwaka.kohomology.util.Degree
 import kotlinx.html.InputType
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonTransformingSerializer
 import org.w3c.dom.HTMLInputElement
 import react.RBuilder
 import react.RComponent
@@ -33,6 +39,24 @@ data class ComputerState(
     val json: String,
     val display: String = "",
 ) : RState
+
+@Serializable
+data class SerializableGenerator(val name: String, val degree: Degree)
+
+object GeneratorSerializer : JsonTransformingSerializer<SerializableGenerator>(SerializableGenerator.serializer()) {
+    override fun transformDeserialize(element: JsonElement): JsonElement {
+        return if (element is JsonArray) {
+            JsonObject(
+                mapOf(
+                    "name" to element[0],
+                    "degree" to element[1],
+                )
+            )
+        } else {
+            element
+        }
+    }
+}
 
 @JsExport
 class Computer(props: ComputerProps) : RComponent<ComputerProps, ComputerState>(props) {
@@ -67,7 +91,7 @@ class Computer(props: ComputerProps) : RComponent<ComputerProps, ComputerState>(
                             };
                             getDifferentialValueArray
                         """.trimIndent()) as GetDifferentialValueArray
-                        val indeterminateList: List<SerializableIndeterminate> = Json.decodeFromString(state.json)
+                        val indeterminateList: List<SerializableGenerator> = Json.decodeFromString(ListSerializer(GeneratorSerializer), state.json)
                         computeCohomology(indeterminateList, getDifferentialValueArray)
                         val display = indeterminateList.toString()
                         setState(
@@ -93,9 +117,6 @@ fun myMultiply(
     }
 }
 
-@Serializable
-data class SerializableIndeterminate(val name: String, val degree: Int)
-
 typealias CurrentContext = GAlgebraContext<Monomial<StringIndeterminateName>, BigRational, SparseNumVector<BigRational>, SparseMatrix<BigRational>>
 typealias CurrentGVector = GVector<Monomial<StringIndeterminateName>, BigRational, SparseNumVector<BigRational>>
 typealias CurrentGVectorOrZero = GVectorOrZero<Monomial<StringIndeterminateName>, BigRational, SparseNumVector<BigRational>>
@@ -103,7 +124,7 @@ typealias GetDifferentialValueArray = CurrentContext.(Array<CurrentGVector>, Cur
 typealias GetDifferentialValueList = CurrentContext.(List<CurrentGVector>) -> List<CurrentGVectorOrZero>
 
 fun computeCohomology(
-    serializableIndeterminateList: List<SerializableIndeterminate>,
+    serializableIndeterminateList: List<SerializableGenerator>,
     getDifferentialValueArray: GetDifferentialValueArray
 ) {
     val indeterminateList: List<Indeterminate<StringIndeterminateName>> = serializableIndeterminateList.map {
