@@ -19,6 +19,7 @@ import react.RBuilder
 import react.RComponent
 import react.RProps
 import react.RState
+import react.ReactElement
 import react.dom.div
 import react.dom.form
 import react.dom.input
@@ -55,34 +56,46 @@ object GeneratorSerializer : JsonTransformingSerializer<SerializableGenerator>(S
     }
 }
 
+private val sphere = """
+    [
+      ["x", 2, "zero"], 
+      ["y", 3, "x^2"]
+    ]
+""".trimIndent()
+
+private fun cpn(n: Int) = """
+    [
+      ["c", 2, "zero"],
+      ["x", ${2 * n + 1}, "c^${n + 1}"]
+    ]
+""".trimIndent()
+
 @ExperimentalJsExport
 @JsExport
 class Computer(props: ComputerProps) : RComponent<ComputerProps, ComputerState>(props) {
 
     init {
-        val n = 3
-        val json = """
-            [
-              ["x", 2, "zero"], 
-              ["y", ${2 * n - 1}, "x^$n"]
-            ]
-        """.trimIndent()
-        state = ComputerState(json)
+        state = ComputerState(sphere)
+    }
+
+    private fun RBuilder.createButton(valueString: String, jsonString: String): ReactElement {
+        return input {
+            attrs {
+                type = InputType.button
+                value = valueString
+                onClickFunction = {
+                    this@Computer.setState {
+                        json = jsonString
+                    }
+                }
+            }
+        }
     }
 
     override fun RBuilder.render() {
         div {
-            input {
-                attrs {
-                    type = InputType.button
-                    value = "hoge"
-                    onClickFunction = {
-                        this@Computer.setState {
-                            json = "hoge"
-                        }
-                    }
-                }
-            }
+            createButton("S^2", sphere)
+            createButton("CP^4", cpn(4))
             form {
                 textArea {
                     attrs {
