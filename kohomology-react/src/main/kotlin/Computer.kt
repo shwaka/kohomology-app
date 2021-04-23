@@ -108,7 +108,8 @@ class Computer(props: ComputerProps) : RComponent<ComputerProps, ComputerState>(
         val freeDGAlgebra = FreeDGAlgebra(SparseMatrixSpaceOverBigRational, generatorList)
         for (degree in 0 until 20) {
             val basis = freeDGAlgebra.cohomology.getBasis(degree)
-            this.props.printlnFun("\\(H^{$degree} = Q$basis\\)")
+            val basisString = basis.joinToString(", ") { it.toString() }
+            this.props.printlnFun("\\(H^{$degree} = \\mathbb{Q}\\{$basisString\\}\\)")
         }
     }
 
