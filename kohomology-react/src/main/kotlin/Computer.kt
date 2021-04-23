@@ -27,7 +27,7 @@ import react.dom.value
 import react.setState
 
 external interface ComputerProps : RProps {
-    var json: String
+    // var json: String
     var printlnFun: (String) -> Unit
 }
 
@@ -60,7 +60,14 @@ object GeneratorSerializer : JsonTransformingSerializer<SerializableGenerator>(S
 class Computer(props: ComputerProps) : RComponent<ComputerProps, ComputerState>(props) {
 
     init {
-        state = ComputerState(props.json)
+        val n = 3
+        val json = """
+            [
+              ["x", 2, "zero"], 
+              ["y", ${2 * n - 1}, "x^$n"]
+            ]
+        """.trimIndent()
+        state = ComputerState(json)
     }
 
     override fun RBuilder.render() {

@@ -16,16 +16,9 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
     }
 
     override fun RBuilder.render() {
-        val n = 3
         div {
             child(Computer::class) {
                 attrs {
-                    json = """
-                        [
-                          ["x", 2, "zero"], 
-                          ["y", ${2 * n - 1}, "x^$n"]
-                        ]
-                    """.trimIndent()
                     printlnFun = { text ->
                         this@App.setState({ previousState ->
                             val newText = previousState.display + listOf(text)
