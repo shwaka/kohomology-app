@@ -5,6 +5,7 @@ import com.github.shwaka.kohomology.dg.GVectorOrZero
 import com.github.shwaka.kohomology.free.FreeDGAlgebra
 import com.github.shwaka.kohomology.free.Indeterminate
 import com.github.shwaka.kohomology.free.Monomial
+import com.github.shwaka.kohomology.free.StringIndeterminateName
 import com.github.shwaka.kohomology.linalg.SparseMatrix
 import com.github.shwaka.kohomology.linalg.SparseNumVector
 import com.github.shwaka.kohomology.specific.BigRational
@@ -83,10 +84,10 @@ class Computer(props: ComputerProps) : RComponent<ComputerProps, ComputerState>(
 }
 
 fun myMultiply(
-    x: GVector<String, BigRational, SparseNumVector<BigRational>>,
-    y: GVector<String, BigRational, SparseNumVector<BigRational>>
-) : GVector<String, BigRational, SparseNumVector<BigRational>> {
-    val gAlgebra = x.gVectorSpace as GAlgebra<String, BigRational, SparseNumVector<BigRational>, SparseMatrix<BigRational>>
+    x: GVector<Monomial<StringIndeterminateName>, BigRational, SparseNumVector<BigRational>>,
+    y: GVector<Monomial<StringIndeterminateName>, BigRational, SparseNumVector<BigRational>>
+) : GVector<Monomial<StringIndeterminateName>, BigRational, SparseNumVector<BigRational>> {
+    val gAlgebra = x.gVectorSpace as GAlgebra<Monomial<StringIndeterminateName>, BigRational, SparseNumVector<BigRational>, SparseMatrix<BigRational>>
     return gAlgebra.context.run {
         this.multiply(x, y)
     }
@@ -95,9 +96,9 @@ fun myMultiply(
 @Serializable
 data class SerializableIndeterminate(val name: String, val degree: Int)
 
-typealias CurrentContext = GAlgebraContext<Monomial<String>, BigRational, SparseNumVector<BigRational>, SparseMatrix<BigRational>>
-typealias CurrentGVector = GVector<Monomial<String>, BigRational, SparseNumVector<BigRational>>
-typealias CurrentGVectorOrZero = GVectorOrZero<Monomial<String>, BigRational, SparseNumVector<BigRational>>
+typealias CurrentContext = GAlgebraContext<Monomial<StringIndeterminateName>, BigRational, SparseNumVector<BigRational>, SparseMatrix<BigRational>>
+typealias CurrentGVector = GVector<Monomial<StringIndeterminateName>, BigRational, SparseNumVector<BigRational>>
+typealias CurrentGVectorOrZero = GVectorOrZero<Monomial<StringIndeterminateName>, BigRational, SparseNumVector<BigRational>>
 typealias GetDifferentialValueArray = CurrentContext.(Array<CurrentGVector>, CurrentGVectorOrZero) -> Array<CurrentGVectorOrZero>
 typealias GetDifferentialValueList = CurrentContext.(List<CurrentGVector>) -> List<CurrentGVectorOrZero>
 
@@ -105,7 +106,7 @@ fun computeCohomology(
     serializableIndeterminateList: List<SerializableIndeterminate>,
     getDifferentialValueArray: GetDifferentialValueArray
 ) {
-    val indeterminateList: List<Indeterminate<String>> = serializableIndeterminateList.map {
+    val indeterminateList: List<Indeterminate<StringIndeterminateName>> = serializableIndeterminateList.map {
         Indeterminate(it.name, it.degree)
     }
 
