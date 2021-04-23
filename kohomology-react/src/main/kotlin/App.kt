@@ -19,7 +19,12 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
         div {
             child(Computer::class) {
                 attrs {
-                    json = """[["x", 2, "zero"], ["y", 3, "x^2"]]"""
+                    json = """
+                        [
+                          ["x", 2, "zero"], 
+                          ["y", 3, "x^2"]
+                        ]
+                    """.trimIndent()
                     printlnFun = { text ->
                         this@App.setState({ previousState ->
                             val newText = previousState.display + text + "\n"

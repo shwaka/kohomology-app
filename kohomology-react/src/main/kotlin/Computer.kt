@@ -22,12 +22,15 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonTransformingSerializer
 import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.HTMLTextAreaElement
 import react.RBuilder
 import react.RComponent
 import react.RProps
 import react.RState
 import react.dom.form
 import react.dom.input
+import react.dom.textArea
+import react.dom.value
 
 external interface ComputerProps : RProps {
     var json: String
@@ -67,13 +70,14 @@ class Computer(props: ComputerProps) : RComponent<ComputerProps, ComputerState>(
 
     override fun RBuilder.render() {
         form {
-            input {
+            textArea {
                 attrs {
-                    type = InputType.text
+                    rows = "20"
+                    cols = "80"
                     value = state.json
                     onChangeFunction = { event ->
                         setState(
-                            ComputerState(json = (event.target as HTMLInputElement).value)
+                            ComputerState(json = (event.target as HTMLTextAreaElement).value)
                         )
                     }
                 }
