@@ -112,7 +112,7 @@ class Computer(props: ComputerProps) : RComponent<ComputerProps, ComputerState>(
                 input {
                     attrs {
                         type = InputType.button
-                        value = "Submit"
+                        value = "Compute"
                         onClickFunction = { _ ->
                             val generatorList: List<SerializableGenerator> =
                                 Json.decodeFromString(ListSerializer(GeneratorSerializer), state.json)
@@ -134,8 +134,11 @@ class Computer(props: ComputerProps) : RComponent<ComputerProps, ComputerState>(
         val freeDGAlgebra = FreeDGAlgebra(SparseMatrixSpaceOverBigRational, generatorList)
         for (degree in 0 until 20) {
             val basis = freeDGAlgebra.cohomology.getBasis(degree)
-            val basisString = basis.joinToString(", ") { it.toString() }
-            this.props.printlnFun("\\(H^{$degree} = \\mathbb{Q}\\{$basisString\\}\\)")
+            val vectorSpaceString = if (basis.isEmpty()) "0" else {
+                val basisString = basis.joinToString(", ") { it.toString() }
+                "\\mathbb{Q}\\{$basisString\\}"
+            }
+            this.props.printlnFun("\\(H^{$degree} = $vectorSpaceString\\)")
         }
     }
 }
