@@ -19,10 +19,12 @@ import react.RBuilder
 import react.RComponent
 import react.RProps
 import react.RState
+import react.dom.div
 import react.dom.form
 import react.dom.input
 import react.dom.textArea
 import react.dom.value
+import react.setState
 
 external interface ComputerProps : RProps {
     var json: String
@@ -30,7 +32,7 @@ external interface ComputerProps : RProps {
 }
 
 data class ComputerState(
-    val json: String,
+    var json: String,
     // val display: String = "",
 ) : RState
 
@@ -62,27 +64,41 @@ class Computer(props: ComputerProps) : RComponent<ComputerProps, ComputerState>(
     }
 
     override fun RBuilder.render() {
-        form {
-            textArea {
-                attrs {
-                    rows = "20"
-                    cols = "80"
-                    value = state.json
-                    onChangeFunction = { event ->
-                        setState(
-                            ComputerState(json = (event.target as HTMLTextAreaElement).value)
-                        )
-                    }
-                }
-            }
+        div {
             input {
                 attrs {
                     type = InputType.button
-                    value = "Submit"
-                    onClickFunction = { _ ->
-                        val generatorList: List<SerializableGenerator> = Json.decodeFromString(ListSerializer(GeneratorSerializer), state.json)
-                        this@Computer.computeCohomology(generatorList)
-                        window.setTimeout({ eval("MathJax.typeset()") }, 300)
+                    value = "hoge"
+                    onClickFunction = {
+                        this@Computer.setState {
+                            json = "hoge"
+                        }
+                    }
+                }
+            }
+            form {
+                textArea {
+                    attrs {
+                        rows = "20"
+                        cols = "80"
+                        value = state.json
+                        onChangeFunction = { event ->
+                            setState(
+                                ComputerState(json = (event.target as HTMLTextAreaElement).value)
+                            )
+                        }
+                    }
+                }
+                input {
+                    attrs {
+                        type = InputType.button
+                        value = "Submit"
+                        onClickFunction = { _ ->
+                            val generatorList: List<SerializableGenerator> =
+                                Json.decodeFromString(ListSerializer(GeneratorSerializer), state.json)
+                            this@Computer.computeCohomology(generatorList)
+                            window.setTimeout({ eval("MathJax.typeset()") }, 300)
+                        }
                     }
                 }
             }
