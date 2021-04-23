@@ -56,10 +56,10 @@ object GeneratorSerializer : JsonTransformingSerializer<SerializableGenerator>(S
     }
 }
 
-private val sphere = """
+private fun evenSphere(n: Int) = """
     [
-      ["x", 2, "zero"], 
-      ["y", 3, "x^2"]
+      ["x", ${n}, "zero"], 
+      ["y", ${2 * n - 1}, "x^2"]
     ]
 """.trimIndent()
 
@@ -70,12 +70,22 @@ private fun cpn(n: Int) = """
     ]
 """.trimIndent()
 
+private val example = """
+    [
+      ["a", 2, "zero"],
+      ["b", 2, "zero"],
+      ["x", 3, "a^2"],
+      ["y", 3, "a*b"],
+      ["z", 3, "b^2"]
+    ]
+""".trimIndent()
+
 @ExperimentalJsExport
 @JsExport
 class Computer(props: ComputerProps) : RComponent<ComputerProps, ComputerState>(props) {
 
     init {
-        state = ComputerState(sphere)
+        state = ComputerState(evenSphere(2))
     }
 
     private fun RBuilder.createButton(valueString: String, jsonString: String): ReactElement {
@@ -94,8 +104,9 @@ class Computer(props: ComputerProps) : RComponent<ComputerProps, ComputerState>(
 
     override fun RBuilder.render() {
         div {
-            createButton("S^2", sphere)
+            createButton("S^2", evenSphere(2))
             createButton("CP^4", cpn(4))
+            createButton("example", example)
             form {
                 textArea {
                     attrs {
