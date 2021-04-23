@@ -1,17 +1,8 @@
-import com.github.shwaka.kohomology.dg.GAlgebra
-import com.github.shwaka.kohomology.dg.GVector
-import com.github.shwaka.kohomology.dg.GVectorOrZero
+
 import com.github.shwaka.kohomology.free.FreeDGAlgebra
-import com.github.shwaka.kohomology.free.FreeGAlgebraContext
 import com.github.shwaka.kohomology.free.GeneratorOfFreeDGA
-import com.github.shwaka.kohomology.free.Monomial
-import com.github.shwaka.kohomology.free.StringIndeterminateName
-import com.github.shwaka.kohomology.linalg.SparseMatrix
-import com.github.shwaka.kohomology.linalg.SparseNumVector
-import com.github.shwaka.kohomology.specific.BigRational
 import com.github.shwaka.kohomology.specific.SparseMatrixSpaceOverBigRational
 import com.github.shwaka.kohomology.util.Degree
-import kotlinx.browser.document
 import kotlinx.browser.window
 import kotlinx.html.InputType
 import kotlinx.html.js.onChangeFunction
@@ -23,7 +14,6 @@ import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonTransformingSerializer
-import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.HTMLTextAreaElement
 import react.RBuilder
 import react.RComponent
@@ -112,7 +102,6 @@ class Computer(props: ComputerProps) : RComponent<ComputerProps, ComputerState>(
             this.props.printlnFun("\\(H^{$degree} = \\mathbb{Q}\\{$basisString\\}\\)")
         }
     }
-
 }
 
 // typealias CurrentContext = FreeGAlgebraContext<StringIndeterminateName, BigRational, SparseNumVector<BigRational>, SparseMatrix<BigRational>>

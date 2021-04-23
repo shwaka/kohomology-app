@@ -2,6 +2,7 @@ plugins {
     val kotlinVersion = "1.4.32"
     kotlin("js") version kotlinVersion
     kotlin("plugin.serialization") version kotlinVersion
+    id("org.jlleitschuh.gradle.ktlint") version "10.0.0"
 }
 
 group = "me.shun"
@@ -31,4 +32,14 @@ kotlin {
             }
         }
     }
+}
+
+tasks.register("kc") {
+    // alias
+    dependsOn("ktlintCheck")
+}
+
+tasks.register("kf") {
+    // alias
+    dependsOn("ktlintFormat")
 }
