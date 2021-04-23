@@ -63,6 +63,7 @@ object GeneratorSerializer : JsonTransformingSerializer<SerializableGenerator>(S
     }
 }
 
+@ExperimentalJsExport
 @JsExport
 class Computer(props: ComputerProps) : RComponent<ComputerProps, ComputerState>(props) {
 
@@ -91,9 +92,6 @@ class Computer(props: ComputerProps) : RComponent<ComputerProps, ComputerState>(
                     onClickFunction = { _ ->
                         val generatorList: List<SerializableGenerator> = Json.decodeFromString(ListSerializer(GeneratorSerializer), state.json)
                         this@Computer.computeCohomology(generatorList)
-                        setState(
-                            ComputerState(json = state.json)
-                        )
                         window.setTimeout({ eval("MathJax.typeset()") }, 300)
                     }
                 }
@@ -116,18 +114,8 @@ class Computer(props: ComputerProps) : RComponent<ComputerProps, ComputerState>(
 
 }
 
-fun myMultiply(
-    x: GVector<Monomial<StringIndeterminateName>, BigRational, SparseNumVector<BigRational>>,
-    y: GVector<Monomial<StringIndeterminateName>, BigRational, SparseNumVector<BigRational>>
-): GVector<Monomial<StringIndeterminateName>, BigRational, SparseNumVector<BigRational>> {
-    val gAlgebra = x.gVectorSpace as GAlgebra<Monomial<StringIndeterminateName>, BigRational, SparseNumVector<BigRational>, SparseMatrix<BigRational>>
-    return gAlgebra.context.run {
-        this.multiply(x, y)
-    }
-}
-
-typealias CurrentContext = FreeGAlgebraContext<StringIndeterminateName, BigRational, SparseNumVector<BigRational>, SparseMatrix<BigRational>>
-typealias CurrentGVector = GVector<Monomial<StringIndeterminateName>, BigRational, SparseNumVector<BigRational>>
-typealias CurrentGVectorOrZero = GVectorOrZero<Monomial<StringIndeterminateName>, BigRational, SparseNumVector<BigRational>>
-typealias GetDifferentialValueArray = CurrentContext.(Array<CurrentGVector>, CurrentGVectorOrZero) -> Array<CurrentGVectorOrZero>
-typealias GetDifferentialValueList = CurrentContext.(List<CurrentGVector>) -> List<CurrentGVectorOrZero>
+// typealias CurrentContext = FreeGAlgebraContext<StringIndeterminateName, BigRational, SparseNumVector<BigRational>, SparseMatrix<BigRational>>
+// typealias CurrentGVector = GVector<Monomial<StringIndeterminateName>, BigRational, SparseNumVector<BigRational>>
+// typealias CurrentGVectorOrZero = GVectorOrZero<Monomial<StringIndeterminateName>, BigRational, SparseNumVector<BigRational>>
+// typealias GetDifferentialValueArray = CurrentContext.(Array<CurrentGVector>, CurrentGVectorOrZero) -> Array<CurrentGVectorOrZero>
+// typealias GetDifferentialValueList = CurrentContext.(List<CurrentGVector>) -> List<CurrentGVectorOrZero>
