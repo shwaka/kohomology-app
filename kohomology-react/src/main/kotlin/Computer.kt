@@ -1,11 +1,9 @@
 import com.github.shwaka.kohomology.dg.GAlgebra
-import com.github.shwaka.kohomology.dg.GAlgebraContext
 import com.github.shwaka.kohomology.dg.GVector
 import com.github.shwaka.kohomology.dg.GVectorOrZero
 import com.github.shwaka.kohomology.free.FreeDGAlgebra
 import com.github.shwaka.kohomology.free.FreeGAlgebraContext
 import com.github.shwaka.kohomology.free.GeneratorOfFreeDGA
-import com.github.shwaka.kohomology.free.Indeterminate
 import com.github.shwaka.kohomology.free.Monomial
 import com.github.shwaka.kohomology.free.StringIndeterminateName
 import com.github.shwaka.kohomology.linalg.SparseMatrix
@@ -28,17 +26,17 @@ import react.RBuilder
 import react.RComponent
 import react.RProps
 import react.RState
-import react.dom.div
 import react.dom.form
 import react.dom.input
 
 external interface ComputerProps : RProps {
     var json: String
+    var printlnFun: (String) -> Unit
 }
 
 data class ComputerState(
     val json: String,
-    val display: String = "",
+    // val display: String = "",
 ) : RState
 
 @Serializable
@@ -75,7 +73,7 @@ class Computer(props: ComputerProps) : RComponent<ComputerProps, ComputerState>(
                     value = state.json
                     onChangeFunction = { event ->
                         setState(
-                            ComputerState(json = (event.target as HTMLInputElement).value, display = state.display)
+                            ComputerState(json = (event.target as HTMLInputElement).value)
                         )
                     }
                 }
@@ -86,25 +84,35 @@ class Computer(props: ComputerProps) : RComponent<ComputerProps, ComputerState>(
                     value = "Submit"
                     onClickFunction = { _ ->
                         val generatorList: List<SerializableGenerator> = Json.decodeFromString(ListSerializer(GeneratorSerializer), state.json)
-                        computeCohomology(generatorList)
-                        val display = generatorList.toString()
+                        this@Computer.computeCohomology(generatorList)
                         setState(
-                            ComputerState(json = state.json, display = display)
+                            ComputerState(json = state.json)
                         )
                     }
                 }
             }
         }
-        div {
-            +state.display
+    }
+
+    private fun computeCohomology(
+        serializableGeneratorList: List<SerializableGenerator>,
+    ) {
+        val generatorList = serializableGeneratorList.map {
+            GeneratorOfFreeDGA(it.name, it.degree, it.differentialValue)
+        }
+        val freeDGAlgebra = FreeDGAlgebra(SparseMatrixSpaceOverBigRational, generatorList)
+        for (degree in 0 until 20) {
+            val basis = freeDGAlgebra.cohomology.getBasis(degree)
+            this.props.printlnFun("H^$degree = Q$basis")
         }
     }
+
 }
 
 fun myMultiply(
     x: GVector<Monomial<StringIndeterminateName>, BigRational, SparseNumVector<BigRational>>,
     y: GVector<Monomial<StringIndeterminateName>, BigRational, SparseNumVector<BigRational>>
-) : GVector<Monomial<StringIndeterminateName>, BigRational, SparseNumVector<BigRational>> {
+): GVector<Monomial<StringIndeterminateName>, BigRational, SparseNumVector<BigRational>> {
     val gAlgebra = x.gVectorSpace as GAlgebra<Monomial<StringIndeterminateName>, BigRational, SparseNumVector<BigRational>, SparseMatrix<BigRational>>
     return gAlgebra.context.run {
         this.multiply(x, y)
@@ -116,16 +124,3 @@ typealias CurrentGVector = GVector<Monomial<StringIndeterminateName>, BigRationa
 typealias CurrentGVectorOrZero = GVectorOrZero<Monomial<StringIndeterminateName>, BigRational, SparseNumVector<BigRational>>
 typealias GetDifferentialValueArray = CurrentContext.(Array<CurrentGVector>, CurrentGVectorOrZero) -> Array<CurrentGVectorOrZero>
 typealias GetDifferentialValueList = CurrentContext.(List<CurrentGVector>) -> List<CurrentGVectorOrZero>
-
-fun computeCohomology(
-    serializableGeneratorList: List<SerializableGenerator>,
-) {
-    val generatorList = serializableGeneratorList.map {
-        GeneratorOfFreeDGA(it.name, it.degree, it.differentialValue)
-    }
-    val freeDGAlgebra = FreeDGAlgebra(SparseMatrixSpaceOverBigRational, generatorList)
-    for (degree in 0 until 20) {
-        val basis = freeDGAlgebra.cohomology.getBasis(degree)
-        println("H^$degree = Q$basis")
-    }
-}
