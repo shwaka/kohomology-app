@@ -11,6 +11,8 @@ import com.github.shwaka.kohomology.linalg.SparseNumVector
 import com.github.shwaka.kohomology.specific.BigRational
 import com.github.shwaka.kohomology.specific.SparseMatrixSpaceOverBigRational
 import com.github.shwaka.kohomology.util.Degree
+import kotlinx.browser.document
+import kotlinx.browser.window
 import kotlinx.html.InputType
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
@@ -92,6 +94,7 @@ class Computer(props: ComputerProps) : RComponent<ComputerProps, ComputerState>(
                         setState(
                             ComputerState(json = state.json)
                         )
+                        window.setTimeout({ eval("MathJax.typeset()") }, 300)
                     }
                 }
             }
@@ -107,7 +110,7 @@ class Computer(props: ComputerProps) : RComponent<ComputerProps, ComputerState>(
         val freeDGAlgebra = FreeDGAlgebra(SparseMatrixSpaceOverBigRational, generatorList)
         for (degree in 0 until 20) {
             val basis = freeDGAlgebra.cohomology.getBasis(degree)
-            this.props.printlnFun("H^$degree = Q$basis")
+            this.props.printlnFun("\\(H^{$degree} = Q$basis\\)")
         }
     }
 
