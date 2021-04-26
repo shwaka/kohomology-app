@@ -15,7 +15,7 @@ repositories {
 
 dependencies {
     implementation("com.ionspin.kotlin:bignum:0.2.3")
-    implementation("com.github.shwaka.kohomology:kohomology:0.3")
+    implementation("com.github.shwaka.kohomology:kohomology:0.4")
     testImplementation(kotlin("test-js"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core-js:1.4.3")
 }
