@@ -5,8 +5,11 @@ Here are two applications which can be used as templates to use [shwaka/kohomolo
 - `kohomology-react`: Input a Sullivan algebra from the browser. (See [github pages](https://shwaka.github.io/kohomology-app/))
 
 ## Requirement
-You need to install Java (JVM) from [Java | Oracle](https://www.java.com/en/) ([日本語ページ](https://www.java.com/ja/)).
-The version of Java is not relevant, I believe, since the application uses `gradle`.
+You need to install Java Development Kit (JDK).
+Version 8 (=1.8) is recommended.
+
+- [Windows] Install from [Amazon Corretto](https://docs.aws.amazon.com/corretto/latest/corretto-8-ug/downloads-list.html). Usually you will choose [amazon-corretto-8-x64-windows-jdk.msi](https://corretto.aws/downloads/latest/amazon-corretto-8-x64-windows-jdk.msi)
+- [Mac, Linux] First, install [sdkman](https://sdkman.io/). Then run `sdk install java 8.292.10.1-amzn`.
 
 ## Usage
 You can run each application by the following way:
