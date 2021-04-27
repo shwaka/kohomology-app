@@ -1,9 +1,14 @@
+import kotlinx.css.Color
+import kotlinx.css.color
 import kotlinx.html.classes
 import react.RBuilder
 import react.RComponent
 import react.RProps
 import react.RState
 import react.dom.div
+import react.dom.style
+import styled.css
+import styled.styledDiv
 
 external interface AppProps : RProps
 data class AppState(
@@ -31,7 +36,10 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
                     }
                 }
             }
-            div {
+            styledDiv {
+                css {
+                    color = Color.red
+                }
                 attrs {
                     classes = setOf("error")
                 }
