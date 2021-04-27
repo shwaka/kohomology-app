@@ -15,6 +15,7 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonTransformingSerializer
 import org.w3c.dom.HTMLTextAreaElement
+import org.w3c.dom.events.Event
 import react.RBuilder
 import react.RComponent
 import react.RProps
@@ -125,16 +126,14 @@ class Computer(props: ComputerProps) : RComponent<ComputerProps, ComputerState>(
                     attrs {
                         type = InputType.button
                         value = "Compute"
-                        onClickFunction = { _ ->
-                            this@Computer.onClick()
-                        }
+                        onClickFunction = this@Computer::onClick
                     }
                 }
             }
         }
     }
 
-    private fun onClick() {
+    private fun onClick(@Suppress("UNUSED_PARAMETER") event: Event) {
         try {
             val generatorList: List<SerializableGenerator> =
                 Json.decodeFromString(ListSerializer(GeneratorSerializer), state.json)
