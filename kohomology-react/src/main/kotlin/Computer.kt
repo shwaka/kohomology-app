@@ -58,7 +58,7 @@ object GeneratorSerializer : JsonTransformingSerializer<SerializableGenerator>(S
 
 private fun evenSphere(n: Int) = """
     [
-      ["x", ${n}, "zero"], 
+      ["x", $n, "zero"], 
       ["y", ${2 * n - 1}, "x^2"]
     ]
 """.trimIndent()
@@ -127,8 +127,8 @@ class Computer(props: ComputerProps) : RComponent<ComputerProps, ComputerState>(
                         onClickFunction = { _ ->
                             val generatorList: List<SerializableGenerator> =
                                 Json.decodeFromString(ListSerializer(GeneratorSerializer), state.json)
-                            this@Computer.computeCohomology(generatorList)
-                            window.setTimeout({ eval("MathJax.typeset()") }, 300)
+                            props.printlnFun(this@Computer.computeCohomology(generatorList))
+                            // window.setTimeout({ eval("MathJax.typeset()") }, 300)
                         }
                     }
                 }
@@ -138,19 +138,22 @@ class Computer(props: ComputerProps) : RComponent<ComputerProps, ComputerState>(
 
     private fun computeCohomology(
         serializableGeneratorList: List<SerializableGenerator>,
-    ) {
+    ): String {
         val generatorList = serializableGeneratorList.map {
             GeneratorOfFreeDGA(it.name, it.degree, it.differentialValue)
         }
         val freeDGAlgebra = FreeDGAlgebra(SparseMatrixSpaceOverBigRational, generatorList)
+        val lines: MutableList<String> = mutableListOf()
         for (degree in 0 until 20) {
             val basis = freeDGAlgebra.cohomology.getBasis(degree)
             val vectorSpaceString = if (basis.isEmpty()) "0" else {
                 val basisString = basis.joinToString(", ") { it.toString() }
                 "\\mathbb{Q}\\{$basisString\\}"
             }
-            this.props.printlnFun("\\(H^{$degree} = $vectorSpaceString\\)")
+            // this.props.printlnFun("\\(H^{$degree} = $vectorSpaceString\\)")
+            lines.add("\\(H^{$degree} = $vectorSpaceString\\)")
         }
+        return lines.joinToString("\n") { it }
     }
 }
 

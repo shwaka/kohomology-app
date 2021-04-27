@@ -6,7 +6,7 @@ import react.dom.div
 
 external interface AppProps : RProps
 data class AppState(
-    val display: List<String> = listOf(),
+    val display: String = ""
 ) : RState
 
 @JsExport
@@ -20,15 +20,14 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
             child(Computer::class) {
                 attrs {
                     printlnFun = { text ->
-                        this@App.setState({ previousState ->
-                            val newText = previousState.display + listOf(text)
-                            AppState(newText)
-                        })
+                        this@App.setState(AppState(text)) {
+                            eval("MathJax.typeset()")
+                        }
                     }
                 }
             }
             div {
-                state.display.map {
+                state.display.lines().map {
                     div {
                         +it
                     }
