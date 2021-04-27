@@ -7,6 +7,8 @@ import kotlinx.browser.window
 import kotlinx.html.InputType
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
+import kotlinx.html.js.onSubmitFunction
+import kotlinx.html.onSubmit
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
@@ -112,6 +114,12 @@ class Computer(props: ComputerProps) : RComponent<ComputerProps, ComputerState>(
             createButton("CP^4", cpn(4))
             createButton("example", example)
             form {
+                attrs {
+                    onSubmitFunction = { event ->
+                        this@Computer.onClick(event)
+                        event.preventDefault()
+                    }
+                }
                 div {
                     +"max degree"
                     input {
@@ -142,11 +150,13 @@ class Computer(props: ComputerProps) : RComponent<ComputerProps, ComputerState>(
                         }
                     }
                 }
-                input {
-                    attrs {
-                        type = InputType.button
-                        value = "Compute"
-                        onClickFunction = this@Computer::onClick
+                div {
+                    input {
+                        attrs {
+                            type = InputType.button
+                            value = "Compute"
+                            onClickFunction = this@Computer::onClick
+                        }
                     }
                 }
             }
