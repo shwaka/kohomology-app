@@ -32,6 +32,9 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
                 }
             }
             div {
+                attrs {
+                    classes = setOf("error")
+                }
                 state.error.lines().map {
                     div {
                         +it
