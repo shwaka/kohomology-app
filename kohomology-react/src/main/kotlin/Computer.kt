@@ -30,6 +30,7 @@ import react.setState
 external interface ComputerProps : RProps {
     // var json: String
     var printlnFun: (String) -> Unit
+    var printErrorFun: (String) -> Unit
 }
 
 data class ComputerState(
@@ -125,14 +126,22 @@ class Computer(props: ComputerProps) : RComponent<ComputerProps, ComputerState>(
                         type = InputType.button
                         value = "Compute"
                         onClickFunction = { _ ->
-                            val generatorList: List<SerializableGenerator> =
-                                Json.decodeFromString(ListSerializer(GeneratorSerializer), state.json)
-                            props.printlnFun(this@Computer.computeCohomology(generatorList))
-                            // window.setTimeout({ eval("MathJax.typeset()") }, 300)
+                            this@Computer.onClick()
                         }
                     }
                 }
             }
+        }
+    }
+
+    private fun onClick() {
+        try {
+            val generatorList: List<SerializableGenerator> =
+                Json.decodeFromString(ListSerializer(GeneratorSerializer), state.json)
+            props.printlnFun(this@Computer.computeCohomology(generatorList))
+            // window.setTimeout({ eval("MathJax.typeset()") }, 300)
+        } catch (e: Exception) {
+            props.printErrorFun(e.message.toString())
         }
     }
 

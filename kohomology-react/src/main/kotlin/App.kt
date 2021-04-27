@@ -6,7 +6,8 @@ import react.dom.div
 
 external interface AppProps : RProps
 data class AppState(
-    val display: String = ""
+    val display: String = "",
+    val error: String = ""
 ) : RState
 
 @JsExport
@@ -23,6 +24,16 @@ class App(props: AppProps) : RComponent<AppProps, AppState>(props) {
                         this@App.setState(AppState(text)) {
                             eval("MathJax.typeset()")
                         }
+                    }
+                    printErrorFun = { text ->
+                        this@App.setState(AppState(error = text))
+                    }
+                }
+            }
+            div {
+                state.error.lines().map {
+                    div {
+                        +it
                     }
                 }
             }
