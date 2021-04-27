@@ -14,6 +14,7 @@ import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonTransformingSerializer
+import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.HTMLTextAreaElement
 import org.w3c.dom.events.Event
 import react.RBuilder
@@ -36,6 +37,7 @@ external interface ComputerProps : RProps {
 
 data class ComputerState(
     var json: String,
+    var maxDegree: String,
     // val display: String = "",
 ) : RState
 
@@ -87,7 +89,7 @@ private val example = """
 class Computer(props: ComputerProps) : RComponent<ComputerProps, ComputerState>(props) {
 
     init {
-        state = ComputerState(evenSphere(2))
+        state = ComputerState(evenSphere(2), "20")
     }
 
     private fun RBuilder.createButton(valueString: String, jsonString: String): ReactElement {
@@ -110,15 +112,33 @@ class Computer(props: ComputerProps) : RComponent<ComputerProps, ComputerState>(
             createButton("CP^4", cpn(4))
             createButton("example", example)
             form {
+                div {
+                    +"max degree"
+                    input {
+                        attrs {
+                            type = InputType.number
+                            value = state.maxDegree
+                            onChangeFunction = { event ->
+                                val value: String = (event.target as HTMLInputElement).value
+                                // 何故か setState の外で代入しておかないと上手くいかない
+                                setState {
+                                    maxDegree = value
+                                }
+                            }
+                        }
+                    }
+                }
                 textArea {
                     attrs {
                         rows = "20"
                         cols = "80"
                         value = state.json
                         onChangeFunction = { event ->
-                            setState(
-                                ComputerState(json = (event.target as HTMLTextAreaElement).value)
-                            )
+                            val value: String = (event.target as HTMLTextAreaElement).value
+                            // 何故か setState の外で代入しておかないと上手くいかない
+                            setState {
+                                json = value
+                            }
                         }
                     }
                 }
@@ -152,7 +172,7 @@ class Computer(props: ComputerProps) : RComponent<ComputerProps, ComputerState>(
         }
         val freeDGAlgebra = FreeDGAlgebra(SparseMatrixSpaceOverBigRational, generatorList)
         val lines: MutableList<String> = mutableListOf()
-        for (degree in 0 until 20) {
+        for (degree in 0 .. state.maxDegree.toInt()) {
             val basis = freeDGAlgebra.cohomology.getBasis(degree)
             val vectorSpaceString = if (basis.isEmpty()) "0" else {
                 val basisString = basis.joinToString(", ") { it.toString() }
