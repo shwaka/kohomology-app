@@ -1,8 +1,9 @@
-
+import com.github.shwaka.kohomology.dg.degree.Degree
+import com.github.shwaka.kohomology.dg.degree.IntDegree
 import com.github.shwaka.kohomology.free.FreeDGAlgebra
 import com.github.shwaka.kohomology.free.GeneratorOfFreeDGA
 import com.github.shwaka.kohomology.specific.SparseMatrixSpaceOverBigRational
-import com.github.shwaka.kohomology.util.Degree
+import com.github.shwaka.kohomology.util.IntAsDegree
 import kotlinx.browser.window
 import kotlinx.html.InputType
 import kotlinx.html.js.onChangeFunction
@@ -44,7 +45,7 @@ data class ComputerState(
 ) : RState
 
 @Serializable
-data class SerializableGenerator(val name: String, val degree: Degree, val differentialValue: String)
+data class SerializableGenerator(val name: String, val degree: IntAsDegree, val differentialValue: String)
 
 object GeneratorSerializer : JsonTransformingSerializer<SerializableGenerator>(SerializableGenerator.serializer()) {
     override fun transformDeserialize(element: JsonElement): JsonElement {
