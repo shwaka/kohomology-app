@@ -1,5 +1,8 @@
 import kotlinx.browser.document
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 object Printer {
     fun printToBrowser(obj: Any) {
