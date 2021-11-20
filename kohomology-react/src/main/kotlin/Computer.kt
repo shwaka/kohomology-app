@@ -1,15 +1,12 @@
-import com.github.shwaka.kohomology.dg.degree.Degree
-import com.github.shwaka.kohomology.dg.degree.IntDegree
+
 import com.github.shwaka.kohomology.free.FreeDGAlgebra
 import com.github.shwaka.kohomology.free.GeneratorOfFreeDGA
 import com.github.shwaka.kohomology.specific.SparseMatrixSpaceOverBigRational
 import com.github.shwaka.kohomology.util.IntAsDegree
-import kotlinx.browser.window
 import kotlinx.html.InputType
 import kotlinx.html.js.onChangeFunction
 import kotlinx.html.js.onClickFunction
 import kotlinx.html.js.onSubmitFunction
-import kotlinx.html.onSubmit
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.Json
@@ -183,7 +180,7 @@ class Computer(props: ComputerProps) : RComponent<ComputerProps, ComputerState>(
         }
         val freeDGAlgebra = FreeDGAlgebra(SparseMatrixSpaceOverBigRational, generatorList)
         val lines: MutableList<String> = mutableListOf()
-        for (degree in 0 .. state.maxDegree.toInt()) {
+        for (degree in 0..state.maxDegree.toInt()) {
             val basis = freeDGAlgebra.cohomology.getBasis(degree)
             val vectorSpaceString = if (basis.isEmpty()) "0" else {
                 val basisString = basis.joinToString(", ") { it.toString() }

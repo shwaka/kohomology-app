@@ -1,6 +1,6 @@
 plugins {
     kotlin("js") version "1.5.0"
-    id("org.jlleitschuh.gradle.ktlint") version "9.4.1"
+    id("org.jlleitschuh.gradle.ktlint") version "10.2.0"
 }
 
 group = "me.shun"
