@@ -163,34 +163,36 @@ class Computer(props: ComputerProps) : RComponent<ComputerProps, ComputerState>(
 
     private fun onClick(@Suppress("UNUSED_PARAMETER") event: Event) {
         try {
-            val generatorList: List<SerializableGenerator> =
-                Json.decodeFromString(ListSerializer(GeneratorSerializer), state.json)
-            props.printlnFun(this@Computer.computeCohomology(generatorList))
+            val cohomologyString = computeCohomology(state.json, state.maxDegree.toInt())
+            props.printlnFun(cohomologyString)
             // window.setTimeout({ eval("MathJax.typeset()") }, 300)
         } catch (e: Exception) {
             props.printErrorFun(e.message.toString())
         }
     }
+}
 
-    private fun computeCohomology(
-        serializableGeneratorList: List<SerializableGenerator>,
-    ): String {
-        val generatorList = serializableGeneratorList.map {
-            GeneratorOfFreeDGA(it.name, it.degree, it.differentialValue)
-        }
-        val freeDGAlgebra = FreeDGAlgebra(SparseMatrixSpaceOverBigRational, generatorList)
-        val lines: MutableList<String> = mutableListOf()
-        for (degree in 0..state.maxDegree.toInt()) {
-            val basis = freeDGAlgebra.cohomology.getBasis(degree)
-            val vectorSpaceString = if (basis.isEmpty()) "0" else {
-                val basisString = basis.joinToString(", ") { it.toString() }
-                "\\mathbb{Q}\\{$basisString\\}"
-            }
-            // this.props.printlnFun("\\(H^{$degree} = $vectorSpaceString\\)")
-            lines.add("\\(H^{$degree} = $vectorSpaceString\\)")
-        }
-        return lines.joinToString("\n") { it }
+private fun jsonToGeneratorList(json: String): List<SerializableGenerator> {
+    return Json.decodeFromString(ListSerializer(GeneratorSerializer), json)
+}
+
+private fun computeCohomology(json: String, maxDegree: Int): String {
+    val serializableGeneratorList = jsonToGeneratorList(json)
+    val generatorList = serializableGeneratorList.map {
+        GeneratorOfFreeDGA(it.name, it.degree, it.differentialValue)
     }
+    val freeDGAlgebra = FreeDGAlgebra(SparseMatrixSpaceOverBigRational, generatorList)
+    val lines: MutableList<String> = mutableListOf()
+    for (degree in 0..maxDegree) {
+        val basis = freeDGAlgebra.cohomology.getBasis(degree)
+        val vectorSpaceString = if (basis.isEmpty()) "0" else {
+            val basisString = basis.joinToString(", ") { it.toString() }
+            "\\mathbb{Q}\\{$basisString\\}"
+        }
+        // this.props.printlnFun("\\(H^{$degree} = $vectorSpaceString\\)")
+        lines.add("\\(H^{$degree} = $vectorSpaceString\\)")
+    }
+    return lines.joinToString("\n") { it }
 }
 
 // typealias CurrentContext = FreeGAlgebraContext<StringIndeterminateName, BigRational, SparseNumVector<BigRational>, SparseMatrix<BigRational>>
