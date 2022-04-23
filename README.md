@@ -1,3 +1,5 @@
+*Caution* This repository is not maintained. Use [kohomology/template](https://github.com/shwaka/kohomology/tree/main/template) instead.
+
 Here are two applications which can be used as templates to use [shwaka/kohomology](https://github.com/shwaka/kohomology).
 
 - `kohomology-cli`: Run the application in the command line. (recommended)
